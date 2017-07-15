@@ -1,0 +1,224 @@
+
+
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-input/iron-input.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+<link rel="import" href="bower_components/app-route/app-location.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/ripple-animation.html">
+
+<link rel="import" href="bower_components/google-signin/google-signin.html">
+<link rel="import" href="my-dashboard.html">
+<link rel="import" href="my-view2.html">
+<link rel="import" href="my-signup.html">
+<link rel="manifest" href="manifest.json">
+
+<dom-module id="my-login">
+  <template>
+    <style is="custom-style">
+      :host {
+        position:absolute;
+        height:100vh;
+        width:100%;
+        background: url('img/bg1.jpg')no-repeat center center fixed;
+        background-repeat: no-repeat;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: #fff;
+      }
+      .main-container{
+        height:100%;
+        background-color: rgba(0,151,167,0.8);
+        padding-left: 10%;
+        padding-right: 10%;
+      }
+      .container{
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+      .link{
+        color: #fff;
+        font-size: 15px;
+        @apply(--layout);
+        @apply(--layout-center-center);
+        padding:10px 10px;
+        text-decoration: none;
+        text-transform: capitalize;
+      }
+      #example-sizing-cover {
+        height:30%;
+        @apply(--layout-center-justified);
+      }
+      .button{
+        @apply(--layout);
+        @apply(--layout-center-center);
+        background-color:#F44336;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        max-width: 420px;
+        margin: auto;
+      }
+      .fb-button{
+        background-color: #4267B2;
+        text-transform: capitalize;
+        margin-bottom: 15px;
+        margin-top: 15px;
+        @apply(--layout);
+        @apply(--layout-center-center);
+        max-width: 420px;
+        margin: auto;
+      }
+      google-signin{
+        @apply(--layout);
+        @apply(--layout-center-center);
+        width:100%;
+      }
+      paper-input{
+        --paper-input-container-focus-color:#fff;
+        --paper-input-container-color:#CFD8DC;
+        --paper-input-container-input-color:#fff;
+        padding-bottom: 10px;
+        font-size: 20px;
+        max-width: 420px;
+        margin: auto;
+      }
+      iron-image{
+        width:100%;
+        height:200px;
+      }
+      </style>
+  <firebase-auth
+     id="auth"
+     user="{{user}}"
+     status-known="{{statusKnown}}"
+     provider="google"
+     on-error="handleError"
+     on-user-created="userSuccessHandler"
+     signedIn="{{isSignedIn}}">
+  </firebase-auth>
+     <app-location route="{{route}}"></app-location>
+     <div class="main-container">
+     <iron-image src="img/b3.png" preload sizing="contain"></iron-image>
+     <div class="container">
+       <div id="message">[[message]]</div>
+
+       <div class="" hidden=[[!user]]>
+         <p>{{computeLoginStatus(statusKnown, user)}}</p>
+       </div>
+       <paper-input label="Username:" value="{{email::input}}" ></paper-input>
+
+       <paper-input label="Password:" type="password" value="{{password::input}}"></paper-input>
+
+       <!--<button class="login" on-tap="login" hidden$="{{computeLoginHidden(statusKnown, user)}}">LOG IN</button>-->
+
+       <paper-button class="button" raised on-tap="login">Log In</paper-button>
+       <paper-button class="link" ><a name="signup" href="signup">New to BCPS? Sign up now!</a></paper-button>
+       <google-signin brand="google" width="wide" on-tap="signIn" disabled="[[disabled]]"></google-signin><br>
+       <paper-button class="link">Forgot Password? Click Here!</paper-button>
+
+     </div>
+     </div>
+  </paper-material>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'my-login',
+      behaviors: [Polymer.NeonAnimatableBehavior],
+
+  properties: {
+    animationConfig:{
+      value: function() {
+        return {
+          'entry': {
+             name:'slide-from-left-animation',
+             node:this
+          },
+          'exit': {
+             name:'fade-out-animation',
+             node:this
+          }
+        }
+      }
+    },
+    disabled: {
+      type: Boolean,
+      reflectToAttribute: true,
+      value: false
+    },
+    signedIn: {
+      type: Boolean,
+      reflectToAttribute: true,
+      value: false
+    },
+  message: {
+    type: String,
+    value: ''
+  },
+  email: {
+    type: String,
+    value: ''
+  },
+  password: {
+    type: String,
+    value: ''
+  },
+  user: {
+    type: Object,
+    value: null
+  },
+  statusKnown: {
+    type: Boolean
+  },
+},
+login: function() {
+ this.$.auth.signInWithEmailAndPassword(this.email, this.password);
+},
+logout: function() {
+ this.$.auth.signOut();
+},
+signIn: function() {
+  this.$.auth.signInWithPopup();
+},
+handleError: function(e) {
+  this.message = 'Error: ' + e.detail.message;
+},
+signUp:function(){
+  this.fire('signUp');
+},
+computeLoginHidden: function(statusKnown, user) {
+  return !statusKnown || !!user;
+},
+computeLogoutHidden: function(statusKnown, user) {
+  return !statusKnown || !user;
+},
+computeLoginStatus: function(statusKnown, user) {
+  if (statusKnown && user ) {
+
+  /*  this.set('route.path', '/dashboard');*/
+    return 'Logged in';
+  }
+
+
+  if (statusKnown) {
+    this.set('route.path', '/login');
+    return 'Logged out';
+  }
+  return 'Unknown (checking status...)';
+},
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,109 @@
+{
+  "Location" : {
+    "PsgcRegion": [
+    {
+      "PsgCodeRegion": "130000000",
+      "RegionCode": "NCR",
+      "RegionName": "National Capital Region",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "140000000",
+      "RegionCode": "CAR",
+      "RegionName": "Cordillera Administrative Region",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "010000000",
+      "RegionCode": "Region I",
+      "RegionName": "Ilocos Region",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "020000000",
+      "RegionCode": "Region II",
+      "RegionName": "Cagayan Valley",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "030000000",
+      "RegionCode": "Region III",
+      "RegionName": "Central Luzon",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "040000000",
+      "RegionCode": "Region IV-A",
+      "RegionName": "Calabarzon",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "170000000",
+      "RegionCode": "Region IV-B",
+      "RegionName": "Mimaropa",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "050000000",
+      "RegionCode": "Region V",
+      "RegionName": "Bicol Region",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "060000000",
+      "RegionCode": "Region VI",
+      "RegionName": "Western Visayas",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "070000000",
+      "RegionCode": "Region VII",
+      "RegionName": "Central Visayas",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "080000000",
+      "RegionCode": "Region VIII",
+      "RegionName": "Eastern Visayas",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "090000000",
+      "RegionCode": "Region IX",
+      "RegionName": "Zamboanga Peninsula",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "100000000",
+      "RegionCode": "Region X",
+      "RegionName": "Northern Mindanao",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "110000000",
+      "RegionCode": "Region XI",
+      "RegionName": "Davao Region",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "120000000",
+      "RegionCode": "Region XII",
+      "RegionName": "Soccsksargen",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "160000000",
+      "RegionCode": "Region XIII",
+      "RegionName": "Caraga",
+      "status": "1"
+    },
+    {
+      "PsgCodeRegion": "150000000",
+      "RegionCode": "ARMM",
+      "RegionName": "Autonomous Region in Muslim Mindanao",
+      "status": "1);"
+    }
+  ]
+}
+
+}

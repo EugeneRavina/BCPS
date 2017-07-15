@@ -1,0 +1,566 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="bower_components/app-layout/app-toolbar/app-toolbar.html">
+<!--Iron Elements-->
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="bower_components/iron-collapse/iron-collapse.html">
+<!--Paper Elements-->
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="bower_components/paper-menu/paper-submenu.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="bower_components/paper-card/paper-card.html">
+
+<!--Polymerfire Elements-->
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="bower_components/polymerfire/firebase-storage.html">
+<!--Neon Animation Elements-->
+<link rel="import" href="bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="bower_components/granite-qrcode-generator/granite-qrcode-generator.html">
+
+<dom-module id="my-step1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+        background-color: green;
+        margin:auto;
+      }
+      app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      color: #fff;
+      background-color: #3f51b5;
+      --app-header-background-front-layer: {
+        background: url('img/flat2.jpg')center;
+        background-size: 100% 100%;
+      };
+      }
+        paper-icon-button {
+        --paper-icon-button-ink-color: white;
+        --iron-icon-fill-color:#444;
+        --paper-icon-button-height:40px;
+        --paper-icon-button-width:40px;
+        font-size: 40px;
+      }
+        paper-fab {
+        position: absolute;
+        right: 16px;
+        top: 200px;
+        will-change: transform;
+        transition: 0.1s -webkit-transform;
+        transition: 0.1s transform;
+      }
+        paper-fab.shrink-to-hidden {
+        -webkit-transform: scale3d(0, 0, 0);
+        transform: scale3d(0, 0, 0);
+      }
+          app-toolbar.middle {
+        height: 90px;
+      }
+        app-toolbar.bottom {
+        height: 70px;
+      }
+        .button{
+        width: 100%;
+        margin-bottom: 10px;
+      }
+        .green{
+        background-color: #43A047;
+      }
+        paper-button iron-icon{
+        color:#fff;
+      }
+        .red{
+        background-color:var(--google-red-500);
+        margin-bottom: 15px;
+      }
+        [main-title] {
+        margin-left: 30px;
+        font-size: 30px;
+        font-weight: 300;
+      }
+        [condensed-title] {
+        margin-left: 10px;
+        font-weight: 300;
+      }
+        .container{
+        margin-top: 250px;
+        background-color: white;
+      }
+        .info-con{
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+        iron-icon{
+        color:#444;
+      }
+        #toast1{
+          width:100%;
+        }
+        input[type="file"] {
+          display: none;
+        }
+        .custom-file-upload {
+           border: 1px solid #ccc;
+           border-radius: 10%;
+           background-color:#EEEEEE;
+           display: inline-block;
+           padding: 10px 10px;
+           max-height: 300px;
+           cursor: pointer;
+           text-align: center;
+           margin: auto;
+           margin-right:15px;
+           margin-bottom:15px;
+           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+         }
+        paper-card{
+          width: 150px;
+          height:100px;
+        }
+        .hide{
+          display: none;
+        }
+        #img{
+          margin-top: 10px;
+          width:120px;
+          height:100px;
+        }
+        .center{
+          text-align: center;
+        }
+        granite-qrcode-generator{
+          @apply(--layout-horizontal);
+          @apply(--layout-center-justified);
+        }
+  </style>
+
+  <app-header effects="waterfall resize-title blend-background parallax-background" condenses reveals>
+      <app-toolbar>
+        <a name="dashboard" href="dashboard"><paper-icon-button icon="arrow-back"></paper-icon-button></a>
+        <div condensed-title>Applicant's Information</div>
+        <paper-icon-button icon="create"></paper-icon-button>
+        <paper-icon-button icon="more-vert"></paper-icon-button>
+      </app-toolbar>
+      <app-toolbar class="middle"></app-toolbar>
+      <app-toolbar class="bottom">
+        <div main-title>Applicant's Information</div>
+      </app-toolbar>
+  </app-header>
+
+    <firebase-auth id="auth" user="{{user}}"> </firebase-auth>
+    <firebase-query
+        id="query"
+        path="users/[[user.uid]]"
+        data="{{form}}">
+    </firebase-query>
+
+    <firebase-query
+        id="region"
+        path="Regions"
+        data="{{regions}}">
+    </firebase-query>
+
+    <firebase-query
+        id="province"
+        path="Province"
+        data="{{province}}">
+    </firebase-query>
+
+    <firebase-query
+        id="citymunicipality"
+        path="City/Municipality"
+        data="{{citymunicipality}}">
+    </firebase-query>
+
+    <firebase-query
+        id="barangay"
+        path="Barangay"
+        data="{{barangay}}">
+    </firebase-query>
+
+    <firebase-storage
+       id="fs"
+       path="/users/{{user.uid}}/files"
+       files="[[files]]"
+       uploaded-files="{{uploadedFiles}}"
+       on-error="catchError"
+       auto-upload>
+   </firebase-storage>
+
+    <firebase-storage
+       id="fs1"
+       path="/users/{{user.uid}}/file"
+       files="[[file1]]"
+       uploaded-files="{{uploadedFile1}}"
+       on-error="catchError"
+       auto-upload>
+   </firebase-storage>
+
+    <firebase-storage
+       id="f2s"
+       path="/users/{{user.uid}}/files"
+       files="[[file2]]"
+       uploaded-files="{{uploadedFile2}}"
+       on-error="catchError"
+       auto-upload>
+   </firebase-storage>
+
+   <firebase-storage
+       id="fsd"
+       on-error="catchError">
+   </firebase-storage>
+    <app-location route="{{route}}"></app-location>
+
+    <div class="container">
+      <div class="info-con">
+        <neon-animated-pages
+            id="pages"
+            selected="{{selected}}"
+            entry-animation="fade-in-animation"
+            exit-animation="fade-out-animation"
+            attr-for-selected="data">
+
+            <section data="step1">
+              <iron-icon icon="account-box"></iron-icon>Applicant's Information
+              <paper-input id="fname" label="First Name" bind-value="{{value}}" required></paper-input>
+              <paper-input id="mname" label="Middle Name" bind-value="{{mname}}"></paper-input>
+              <paper-input id="lname" label="Last Name"></paper-input>
+              <paper-input id="suffix" label="Suffix (Jr./Sr./III/etc.)"></paper-input>
+              <paper-button class="button" on-tap="_goNext">Next</paper-button>
+          </section>
+
+            <section data="step2">
+             <iron-icon icon="room"></iron-icon>Location<br>
+               <paper-dropdown-menu label="Region" id="reg">
+                  <paper-listbox class="dropdown-content">
+                  <template is="dom-repeat" items="[[regions]]" as="regions">
+                     <paper-item class="content"> [[regions.RegionCode]] </paper-item>
+                   </template>
+                  </paper-listbox>
+               </paper-dropdown-menu>
+
+               <paper-dropdown-menu label="Province" id="prov">
+                  <paper-listbox class="dropdown-content">
+                  <template is="dom-repeat" items="[[province]]" as="province">
+                     <paper-item class="content"> [[province.ProvinceName]] </paper-item>
+                   </template>
+                  </paper-listbox>
+               </paper-dropdown-menu>
+
+               <paper-dropdown-menu label="City / Municipality" id="citymuni">
+                  <paper-listbox class="dropdown-content">
+                  <template is="dom-repeat" items="[[citymunicipality]]" as="citymunicipality">
+                     <paper-item class="content"> [[citymunicipality.MunicipalityCityName]] </paper-item>
+                   </template>
+                  </paper-listbox>
+               </paper-dropdown-menu>
+
+               <paper-dropdown-menu label="Barangay" id="brgy">
+                  <paper-listbox class="dropdown-content">
+                     <template is="dom-repeat" items="[[barangay]]" as="barangay">
+                     <paper-item class="content"> [[barangay.BarangayName]] </paper-item>
+                     </template>
+                  </paper-listbox>
+               </paper-dropdown-menu>
+
+              <paper-input id="str" label="Street"></paper-input>
+              <paper-button class="button" on-tap="_goNext">Next</paper-button><br>
+              <paper-button class="button" on-tap="_goPrev">Previous</paper-button>
+
+
+            </section>
+            <section data="step3">
+              <iron-icon icon="get-app"></iron-icon>Upload Cedula
+              <paper-input id="CedulaNo" label="Cedula No."></paper-input>
+
+                <label for="fileuploader" class="custom-file-upload">
+                    <paper-icon-button icon="backup" raised></paper-icon-button> Upload Cedula<br>
+                    <template is="dom-repeat" items="[[uploadedFiles]]">
+                     <paper-input raised type="hidden" is="iron-input" class="hide" id="addpic1" bind-value="{{bindValue}}" value="{{item.downloadURL}}"></paper-input>
+
+                      <paper-card id="img" image="{{item.downloadURL}}">
+                          <div class="card-content">
+                              {{item.metadata.name}}<br>
+                              <br/>
+                              <button on-tap="deleteFile" value="{{item.ref.fullPath}}">Delete</button>
+                          </div>
+                         </paper-card>
+                    </template>
+                </label>
+                <input id="fileuploader" type="file" on-change="onFileUpload" multiple/><br>
+                <paper-input id="addpic1" class="hide" type="hidden" is="iron-input" value="[[bindValue]]"></paper-input>
+
+                <paper-button class="button" on-tap="_goNext">Next</paper-button><br>
+                <paper-button class="button" on-tap="_goPrev">Previous</paper-button>
+            </section>
+
+            <section data="step4">
+              <iron-icon icon="account-box"></iron-icon>Business Information
+                  <p>Is the business subject for business clearance application a subsidiary
+                    enterprise underlying another business?</p>
+                  <p>(Ang negosyo bang inyong isinumite para sa kahilingan ng business clearance
+                  ay pagmamay-ari ng isa pang negosyo?)</p>
+
+                <paper-button class="green" on-tap="toggle"><iron-icon icon="check"></iron-icon> Yes</paper-button>
+                <paper-button class="red" on-tap="_goNext"><iron-icon icon="cancel"></iron-icon> No</paper-button>
+
+                <iron-collapse id="collapse">
+                  <paper-input id="holdingC" label="Please Specify the name of the Holding Company"></paper-input>
+                  <paper-button class="button" on-tap="_goNext">Next</paper-button><br>
+                </iron-collapse>
+                <br>
+                <paper-button class="button" on-tap="_goPrev">Previous</paper-button><br>
+
+            </section>
+            <section data="step5">
+              <iron-icon icon="account-box"></iron-icon>Business Information
+
+                 <paper-input id="BusinessName" label="Registered Business Name"></paper-input><br>
+                  *Optional<br>
+                 <label for="fileuploader2" class="custom-file-upload">
+                     <paper-icon-button icon="backup" raised></paper-icon-button><br>
+
+                      Upload <br> DTI Certificate<br>
+                     <template is="dom-repeat" items="[[uploadedFile1]]" as="upload">
+                      <paper-input raised  is="iron-input" class="hide" id="addpic2" bind-value="{{dti}}" value="{{upload.downloadURL}}"></paper-input>
+                       <paper-card id="img" image="{{upload.downloadURL}}">
+                           <div class="card-content">
+                               {{item.metadata.name}}<br>
+                               <br/>
+                               <button on-tap="deleteFile" value="{{upload.ref.fullPath}}">Delete</button>
+                           </div>
+                          </paper-card>
+                     </template>
+                 </label>
+                 <input id="fileuploader2" type="file" on-change="onFileUpload3" multiple/>
+                 <paper-input id="addpic2" class="hide" is="iron-input" value="[[dti]]"></paper-input>
+
+                 <!--<label for="fileuploader4" class="custom-file-upload">
+                     <paper-icon-button icon="backup" raised></paper-icon-button><br>
+                      Upload <br> Endorsement<br>
+                     <template is="dom-repeat" items="[[uploadedFile1]]" as="endorsement">
+                      <paper-input raised  is="iron-input" class="hide"  id="addpic4" bind-value="{{endorsement}}" value="{{upload.downloadURL}}"></paper-input>
+                       <paper-card id="img" image="{{endorsement.downloadURL}}">
+                           <div class="card-content">
+                               {{item.metadata.name}}<br>
+                               <br/>
+                               <button on-tap="deleteFile" value="{{upload.ref.fullPath}}">Delete</button>
+                           </div>
+                          </paper-card>
+                     </template>
+                 </label>
+                 <input id="fileuploader4" type="file" on-change="onFileUpload4" multiple/><br>
+                 <paper-input id="addpic4" class="hide"  is="iron-input" value="[[endorsement]]"></paper-input>-->
+
+                 <paper-input hidden id="status" label="Status" value="Pending"></paper-input>
+                <paper-button class="button" on-tap="_goNext">Next</paper-button><br>
+                <paper-button class="button" on-tap="_goPrev">Previous</paper-button>
+
+              <!--  <paper-dialog id="scrolling" modal>
+                    <img src="img/finish.jpg" height="30%" width="80%"></img>
+                    <p>Successfully Added The Information</p>
+                        <h2>Application Form</h2>
+                        <paper-dialog-scrollable>
+                          <paper-input id="example"  label="FirstName"></paper-input>
+                          <paper-input id="example1" label="MiddleName"></paper-input>
+                          <paper-input id="example2" label="LastName"></paper-input>
+                      </paper-dialog-scrollable>
+                    <div class="buttons">
+                       <paper-button id="close" dialog-confirm autofocus on-tap="close">Continue</paper-button>
+                    </div>
+                </paper-dialog>-->
+
+             </section>
+             <section data="step6">
+               <div class="center">
+                 <h1>Proceed to your Barangay Hall</h1>
+                 <p>To get your Business Clearance, proceed to the Barangay Hall and present this QR Code.</p>
+               </div>
+
+               <granite-qrcode-generator
+                   id="test"
+                   data="Name:[[value]] [[mname]]"
+                   mode="alphanumeric"
+                   auto>
+               </granite-qrcode-generator>
+
+               <paper-dialog id="scrolling" modal>
+                     <img src="img/finish.jpg" height="30%" width="80%"></img>
+                     Proceed to the Barangay Hall to get your business clearance and present the QR Code.
+                     <div class="buttons">
+                        <paper-button id="close" dialog-confirm autofocus on-tap="close">Continue</paper-button>
+                     </div>
+                 </paper-dialog>
+
+               <paper-button class="button" on-tap="_goPrev">Previous</paper-button><br>
+               <paper-button id="add" class="button" on-tap="add">Finish</paper-button>
+             </section>
+          </neon-animated-pages>
+      </div>
+    </div>
+</template>
+
+    <script>
+    Polymer({
+      is: 'my-step1',
+      properties: {
+        selected: {
+          type: String,
+          value: 'step1'
+        },
+        form: {
+          type: Object
+        },
+        regions: {
+          type: Object
+        },
+        province: {
+          type: Object
+        },
+        citymunicipality: {
+          type: Object
+        },
+        barangay: {
+          type: Object
+        },
+        files: {
+          type: Array,
+          notify: true,
+          value: [],
+        },
+        file1: {
+          type: Array,
+          notify: true,
+          value: [],
+        },
+        uploadTasks: {
+          type: Array,
+          observer: '_uploadTasksChanged'
+        },
+        uploadedFiles: {
+          type: Array,
+        },
+        uploadedFile1:{
+          type: Array,
+        }
+        // uploadedFile2:{
+        //   type: Array,
+        // }
+      },
+      catchError(e) {
+        this.$$('#toaster').show({
+          text: e.detail.message
+        });
+      },
+      deleteFile(e) {
+        this.$$('#fsd').path = e.target.value;
+        this.$$('#fsd').destroy().then(function(x){
+          this.$$('#toaster').show({
+            text: 'Successfully deleted ' + e.target.value
+          });
+        }.bind(this)).catch(function(error){
+          console.log(error);
+          this.$$('#toaster').show({
+            text: error.message
+          });
+        })
+      },
+      _uploadTasksChanged(uploadTasks) {
+        console.log(uploadTasks);
+      },
+      _uploadedFilesChanged(uploadedFiles) {
+        console.log(uploadedFiles);
+      },
+      _uploadedFilesChanged(uploadedFile1) {
+        console.log(uploadedFile1);
+      },
+      _uploadedFilesChanged(uploadedFile2) {
+        console.log(uploadedFile2);
+      },
+      onFileUpload(e) {
+        this.files = e.target.files;
+      },
+      onFileUpload3(e) {
+        this.file1 = e.target.files;
+      },
+      onFileUpload2(e) {
+        this.file = e.target.files[0];
+        this.$$('#fs2').upload();
+      },
+      isImage(c) {
+        return c && c.indexOf('image') === 0;
+      },
+      add: function() {
+      this.$.query.ref.push({
+          FirstName: this.$.fname.value,
+          MiddleName: this.$.mname.value,
+          LastName: this.$.lname.value,
+          Suffix: this.$.suffix.value,
+          Region:this.$.reg.value,
+          Province:this.$.prov.value,
+          CityMunicipality:this.$.citymuni.value,
+          Barangay:this.$.brgy.value,
+          Street:this.$.str.value,
+          Ctc: this.$.addpic1.value,
+          Dti: this.$.addpic2.value,
+          CedulaNo: this.$.CedulaNo.value,
+          HoldingCompany:this.$.holdingC.value,
+          BusinessName: this.$.BusinessName.value,
+          Status: this.$.status.value,
+          startedAt: firebase.database.ServerValue.TIMESTAMP
+        });
+            this.$.scrolling.open();
+           this.$.example.value = this.$.fname.value;
+           this.$.example1.value = this.$.mname.value;
+           this.$.example2.value = this.$.lname.value;
+    /*     this.set('route.path', '/dashboard');
+          this.$.fname.value = null;
+          this.$.mname.value = null;
+          this.$.lname.value = null;*/
+      },
+      close: function(){
+        this.set('route.path', '/account');
+      },
+      _goPrev: function() {
+        this.$.pages.selectPrevious();
+      },
+      _goNext: function() {
+        this.$.pages.selectNext();
+      },
+      toggle: function() {
+        this.$.collapse.toggle();
+      },
+    });
+    </script>
+</dom-module>

@@ -1,0 +1,217 @@
+
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-input/iron-input.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-from-right-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-right-animation.html">
+
+<link rel="import" href="my-dashboard.html">
+<dom-module id="my-signup">
+  <template>
+    <style is="custom-style">
+      :host {
+        position: absolute;
+        height:100vh;
+        width:100%;
+        background: url('img/bg1.jpg')no-repeat center center fixed;
+        background-repeat: no-repeat;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+        color: #fff;
+      }
+      .main-container{
+        height:100%;
+        background-color: rgba(0,151,167,0.8);
+        padding-left: 10%;
+        padding-right: 10%;
+      }
+      paper-input{
+        --paper-input-container-focus-color:#fff;
+        --paper-input-container-color:#CFD8DC;
+        --paper-input-container-input-color:#fff;
+      }
+      paper-button{
+        @apply(--layout);
+        @apply(--layout-center-center);
+        margin-bottom: 15px;
+        margin-top: 15px;
+        background-color:#F44336;
+      }
+      .center{
+        @apply(--layout);
+        @apply(--layout-center-center);
+      }
+      .header{
+        padding-top:15px;
+      }
+      iron-icon{
+        height: 200px;
+        width: 200px;
+      }
+    </style>
+
+    <firebase-auth
+        id="auth"
+        user="{{user}}"
+        status-known="{{statusKnown}}"
+        provider="google"
+        on-error="handleError">
+    </firebase-auth>
+    <firebase-query
+        id="query"
+        path="users/[[user.uid]]"
+        data="{{form}}">
+    </firebase-query>
+
+     <app-location route="{{route}}"></app-location>
+     <div class="main-container">
+       <div class="header"> <a name="login" href="login">
+         <paper-icon-button icon="arrow-back" on-tap="showList" ></paper-icon-button></a> </div>
+       <neon-animated-pages
+           id="pages"
+           selected="{{selected}}"
+           entry-animation="fade-in-animation"
+           exit-animation="fade-out-animation"
+           attr-for-selected="data">
+
+           <section data="step1">
+
+           <div class="center">
+             <iron-icon icon="account-circle"></iron-icon>
+           </div>
+           <paper-input label="Username:" value="{{email::input}}"></paper-input>
+
+           <paper-input label="Password:" type="password" value="{{password::input}}"></paper-input>
+
+
+           <paper-dialog id="scrolling">
+           <h2></h2>
+           <div class="buttons">
+             <paper-button dialog-dismiss>Cancel</paper-button>
+             <paper-button dialog-confirm autofocus>Accept</paper-button>
+           </div>
+         </paper-dialog>
+             <paper-button class="button" on-tap="_goNext">Next</paper-button>
+         </section>
+
+           <section data="step2">
+             <div class="center">
+               <iron-icon icon="account-circle"></iron-icon>
+             </div>
+
+             <paper-input id="fname" label="First Name"></paper-input>
+             <paper-input id="mname" label="Middle Name"></paper-input>
+             <paper-input id="lname" label="Last Name"></paper-input>
+             <paper-button class="button" raised on-tap="signup" hidden$="[[user]]">Sign Up</paper-button><br>
+             <paper-button class="button" on-tap="_goPrev">Previous</paper-button>
+
+           </section>
+           <section data="step3">
+             <div class="center">
+               <iron-icon icon="account-circle"></iron-icon>
+             </div>
+             <paper-input id="CedulaNo" label="Cedula No."></paper-input>
+
+               <paper-button class="button" on-tap="_goPrev">Previous</paper-button>
+           </section>
+         </neon-animated-pages>
+
+  </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'my-signup',
+
+      behaviors: [Polymer.NeonAnimatableBehavior],
+
+      properties:{
+        animationConfig:{
+        value: function() {
+          return {
+            'entry': {
+              name:'slide-from-right-animation',
+              node: this
+            },
+            'exit':{
+              name:'slide-right-animation',
+              node: this
+            }
+          }
+        }
+      },
+        selected: {
+          type: String,
+          value: 'step1'
+        },
+        signedIn: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+        statusKnown: {
+          type: Boolean
+        },
+        email: {
+          type: String,
+          value: ''
+        },
+        password: {
+          type: String,
+          value: ''
+        },
+        user: {
+          type: Object,
+          value: null
+        },
+        form: {
+          type: Object,
+        }
+    },
+      showList: function() {
+        this.fire('show-list');
+      },
+      _goPrev: function() {
+        this.$.pages.selectPrevious();
+      },
+      _goNext: function() {
+        this.$.pages.selectNext();
+      },
+      signup: function() {
+        this.$.auth.createUserWithEmailAndPassword(this.email, this.password).then(function() {
+          this.$.query.ref.push({
+              FirstName: this.$.fname.value,
+              MiddleName: this.$.mname.value,
+              LastName: this.$.lname.value,
+            });
+        });
+
+    },
+     sendEmailVerification: function() {
+      // [START sendemailverification]
+      firebase.auth().currentUser.sendEmailVerification().then(function() {
+        // Email Verification sent!
+        // [START_EXCLUDE]
+        alert('Email Verification Sent!');
+        // [END_EXCLUDE]
+      });
+      // [END sendemailverification]
+    }
+  });
+
+
+  </script>
+</dom-module>

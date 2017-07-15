@@ -1,0 +1,88 @@
+{
+  "PsgcDistrict": [
+    {
+      "PsgCodeDistrict": "133901000",
+      "DistrictName": "Tondo I / II",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133902000",
+      "DistrictName": "Binondo",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133903000",
+      "DistrictName": "Quiapo",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133904000",
+      "DistrictName": "San Nicolas",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133905000",
+      "DistrictName": "Santa Cruz",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133906000",
+      "DistrictName": "Sampaloc",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133907000",
+      "DistrictName": "San Miguel",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133908000",
+      "DistrictName": "Ermita",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133909000",
+      "DistrictName": "Intramuros",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133910000",
+      "DistrictName": "Malate",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133911000",
+      "DistrictName": "Paco",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133912000",
+      "DistrictName": "Pandacan",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133913000",
+      "DistrictName": "Port Area",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1"
+    },
+    {
+      "PsgCodeDistrict": "133914000",
+      "DistrictName": "Santa Ana",
+      "PsgCodeMunicipalityCity": "133900000",
+      "status": "1);"
+    }
+  ]
+}

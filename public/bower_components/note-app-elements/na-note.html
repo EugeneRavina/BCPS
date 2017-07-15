@@ -1,0 +1,210 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../paper-styles/shadow.html">
+<link rel="import" href="../paper-styles/typography.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-item/paper-item-body.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-avatar/paper-avatar.html">
+<link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
+
+<dom-module id="na-note">
+  <template>
+    <style>
+      :host {
+        display: block;
+        border-radius: 2px;
+
+        --iron-autogrow-textarea: {
+          margin: 0;
+          padding: 0;
+          font-family: 'Roboto Slab', Times New Roman, serif;
+          white-space: pre-wrap;
+        }
+      }
+
+      iron-autogrow-textarea {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        border: 0;
+        margin: 1em 0 0;
+        padding: 0;
+        font-size: 0.9em;
+        font-family: 'Roboto Slab', Times New Roman, serif;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      h1 {
+        font-size:20px;
+        text-align: center;
+      }
+
+      h1:not(.hidden)+p {
+        margin-top: 1em;
+      }
+
+      p {
+        margin: 0;
+        font-family: 'Roboto Slab', Times New Roman, serif;
+        font-size: 0.9em;
+        white-space: pre-wrap;
+      }
+
+      .placeholder:after {
+        content: 'Tap to edit';
+        opacity: 0.5;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .empty {
+        font-style: italic;
+        color: #737373;
+        line-height: 0;
+        pointer-events: none;
+      }
+
+      input {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        margin: 0;
+        outline: none;
+        border: 0;
+        background: transparent;
+        white-space: pre-wrap;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        font-size: 1.15em;
+        font-weight: bold;
+        color: #212121;
+      }
+      paper-item{
+        @apply(--layout);
+        @apply(--layout-center-center);
+        max-width:500px;
+        margin: auto;
+      }
+      paper-avatar.large {
+       --paper-avatar-width: 50px;
+      }
+      .card {
+        margin-top: 100px;
+        margin: 24px;
+        padding: 16px;
+        color: #757575;
+        border-radius: 5px;
+        background-color: #fff;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+    <template is="dom-if" if="[[editable]]">
+      <h1>Business Clearance Processing Information</h1>
+      <div class="body">
+        <p><b>Name of the Applicant:</b>  [[body]]</p><br>
+        <p><b>Address:</b> [[address]]</p><br>
+        <p><b>Business Name:</b> [[title]]</p>
+      </div>
+
+    <!--  <iron-autogrow-textarea
+          bind-value="{{body}}">
+      </iron-autogrow-textarea>-->
+
+    </template>
+    <template is="dom-if" if="[[!editable]]">
+      <paper-item class="card">
+         <paper-avatar label="[[body]]" src="[[user.photoURL]]" class="large"></paper-avatar>
+         <paper-item-body two-line>
+           <div><b> &nbsp; [[title]]</b></div>
+           <div secondary><i>&nbsp; by [[body]] [[name]]</i> </div>
+         </paper-item-body>
+      </paper-item>
+
+    </template>
+
+  </template>
+  <script>
+  var monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+    Polymer({
+      is: 'na-note',
+
+      properties: {
+        editable: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        title: {
+          type: String,
+          notify: true,
+          value: ''
+        },
+
+        body: {
+          type: String,
+          notify: true,
+          value: ''
+        },
+        address: {
+          type: String,
+          notify: true,
+          value: ''
+        },
+
+        lastUpdated: {
+          type: Number,
+          value: 0
+        }
+      },
+      _getDate: function(timestamp) {
+        var date = new Date(timestamp);
+        var seconds = Math.floor((new Date() - date) / 1000);
+
+        if (seconds < 3600) {
+          var minutes = Math.floor(seconds/60)
+          return (minutes > 1) ? minutes + " minutes ago" : "1 minute ago";
+        } else if (seconds < 86400) {
+          var hours = Math.floor(seconds/3600)
+          return (hours > 1) ? hours + " hours ago" : "1 hour ago";
+        } else {
+          var day = date.getDate();
+          var monthIndex = date.getMonth();
+          var year = date.getFullYear();
+          return monthNames[monthIndex] + ' ' + day + ' ' + year;
+        }
+      },
+
+      emptyClass: function(content) {
+        return !content ? 'hidden' : '';
+      },
+
+      propertiesAreEmpty: function() {
+        for (var i = 0; i < arguments.length; ++i) {
+          if (arguments[i]) {
+            return false;
+          }
+        }
+        return true;
+      }
+    })
+  </script>
+</dom-module>

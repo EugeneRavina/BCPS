@@ -1,0 +1,292 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="bower_components/paper-menu/paper-submenu.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-pages/iron-pages.html">
+
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/polymerfire/firebase-document.html">
+
+<link rel="import" href="bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-in-animation.html">
+
+<dom-module id="my-view3">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+        background-color: green;
+        margin:auto;
+      }
+      app-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      color: #fff;
+      background-color: #3f51b5;
+      --app-header-background-front-layer: {
+        background: url('img/flat2.jpg')center;
+        background-size: 100% 100%;
+      };
+      }
+        paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+        paper-fab {
+        position: absolute;
+        right: 16px;
+        top: 200px;
+        will-change: transform;
+        transition: 0.1s -webkit-transform;
+        transition: 0.1s transform;
+      }
+        paper-fab.shrink-to-hidden {
+        -webkit-transform: scale3d(0, 0, 0);
+        transform: scale3d(0, 0, 0);
+      }
+          app-toolbar.middle {
+        height: 90px;
+      }
+        app-toolbar.bottom {
+        height: 70px;
+      }
+        .button{
+        width: 100%;
+      }
+        .green{
+        background-color: #43A047;
+      }
+        paper-button iron-icon{
+        color:#fff;
+      }
+        .red{
+        background-color:var(--google-red-500);
+      }
+        [main-title] {
+        margin-left: 30px;
+        font-size: 30px;
+        font-weight: 300;
+      }
+        [condensed-title] {
+        margin-left: 10px;
+        font-weight: 300;
+      }
+        .container{
+        margin-top: 250px;
+        background-color: white;
+      }
+        .info-con{
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+        iron-icon{
+        color:#444;
+      }
+  </style>
+
+  <app-header effects="waterfall resize-title blend-background parallax-background" condenses reveals>
+      <app-toolbar>
+        <a name="dashboard" href="dashboard"><paper-icon-button icon="arrow-back"></paper-icon-button></a>
+        <div condensed-title>Applicant's Information</div>
+        <paper-icon-button icon="create"></paper-icon-button>
+        <paper-icon-button icon="more-vert"></paper-icon-button>
+      </app-toolbar>
+      <app-toolbar class="middle"></app-toolbar>
+      <app-toolbar class="bottom">
+        <div main-title>Applicant's Information</div>
+      </app-toolbar>
+  </app-header>
+    <paper-fab icon="star"></paper-fab>
+
+    <firebase-auth id="auth" user="{{user}}"> </firebase-auth>
+
+    <firebase-query
+        id="region"
+        path="Regions"
+        data="{{regions}}">
+    </firebase-query>
+    <firebase-query
+        id="query"
+        path="Province"
+        data="{{province}}">
+    </firebase-query>
+    <firebase-query
+        id="citymunicipality"
+        path="City/Municipality"
+        data="{{citymunicipality}}">
+    </firebase-query>
+    <firebase-query
+        id="barangay"
+        path="Barangay"
+        data="{{barangay}}">
+    </firebase-query>
+
+    <firebase-storage
+        path="/users/{{userId}}/files/{{filepath}}"
+        files="[[fileArray]]"
+        upload-tasks="{{uploadTasks}}">
+    </firebase-storage>
+
+    <div class="container">
+      <div class="info-con">
+        <neon-animated-pages
+        id="pages"
+        selected="{{selected}}"
+        entry-animation="fade-in-animation"
+        exit-animation="fade-out-animation"
+        attr-for-selected="data">
+
+      <section data="step1">
+           <iron-icon icon="account-box"></iron-icon>Province
+         <template is="dom-repeat" items="[[province]]" as="province">
+          <paper-item class="content">[[province.PsgCodeProvince]] [[province.ProvinceName]] [[province.PsgCodeRegion]]</paper-item>
+         </template>
+              <iron-icon icon="account-box"></iron-icon>Province
+              <paper-input id="input" label="PsgCodeProvince"></paper-input>
+              <paper-input id="input2" label="ProvinceName"></paper-input>
+              <paper-input id="input3" label="PsgCodeRegion"></paper-input>
+
+              <paper-button id="add" class="button" on-tap="add">ADD</paper-button><br>
+              <paper-button class="button" on-tap="_goNext">Next</paper-button>
+      </section>
+
+            <section data="step2">
+                 <iron-icon icon="account-box"></iron-icon>City / Municipality
+              <template is="dom-repeat" items="[[citymunicipality]]" as="city">
+               <paper-item class="content">[[city.PsgCodeMunicipalityCity]] [[city.MunicipalityCityName]] [[city.PsgCodeProvince]]</paper-item>
+              </template>
+                   <iron-icon icon="account-box"></iron-icon>City / Municipality
+                   <paper-input id="input4" label="PsgCodeMunicipalityCity"></paper-input>
+                   <paper-input id="input5" label="MunicipalityCityName"></paper-input>
+                   <paper-input id="input6" label="PsgCodeProvince"></paper-input>
+
+                   <paper-button id="add1" class="button" on-tap="add1">ADD</paper-button><br>
+                   <paper-button class="button" on-tap="_goNext">Next</paper-button>
+                   <paper-button class="button" on-tap="_goPrev">Previous</paper-button>
+            </section>
+
+            <section data="step4">
+                 <iron-icon icon="account-box"></iron-icon>Barangay
+              <template is="dom-repeat" items="[[barangay]]" as="barangay">
+               <paper-item class="content">[[barangay.PsgCodeBarangay]] [[barangay.BarangayName]] [[barangay.PsgCodeMunicipalityCity]]
+                     [[barangay.PsgCodeDistrict]]
+               </paper-item>
+              </template>
+                   <iron-icon icon="account-box"></iron-icon>Barangay
+                   <paper-input id="input7" label="PsgCodeBarangay"></paper-input>
+                   <paper-input id="input8" label="BarangayName"></paper-input>
+                   <paper-input id="input9" label="PsgCodeMunicipalityCity"></paper-input>
+                   <paper-input id="input10" label="PsgCodeDistrict"></paper-input>
+
+                   <paper-button id="add2" class="button" on-tap="add2">ADD</paper-button><br>
+
+                   <paper-button class="button" on-tap="_goNext">Next</paper-button>
+
+                   <paper-button class="button" on-tap="_goPrev">Previous</paper-button>
+
+            </section>
+            <section data="step5">
+              <iron-icon icon="account-box"></iron-icon>Business Information
+              <paper-input label="Registered Business Name."></paper-input>
+                <paper-icon-button icon="get-app" raised></paper-icon-button>
+                <paper-button id="add" class="button" on-tap="add">Finish</paper-button>
+            </section>
+          </neon-animated-pages>
+      </div>
+    </div>
+</template>
+  <script>
+  Polymer({
+  is: 'my-view3',
+  properties: {
+    selected: {
+      type: String,
+      value: 'step1'
+    },
+    form: {
+      type: Object
+    },
+    regions: {
+      type: Object
+    },
+    province: {
+      type: Object
+    },
+    citymunicipality: {
+      type: Object
+    },
+    barangay: {
+      type: Object
+    },
+  },
+  add: function() {
+  this.$.query.ref.push({
+      PsgCodeProvince: this.$.input.value,
+      ProvinceName: this.$.input2.value,
+      PsgCodeRegion: this.$.input3.value,
+    });
+      this.$.input.value = null;
+      this.$.input2.value = null;
+      this.$.input3.value = null;
+  },
+  add1: function() {
+    this.$.citymunicipality.ref.push({
+        PsgCodeMunicipalityCity: this.$.input4.value,
+        MunicipalityCityName: this.$.input5.value,
+        PsgCodeProvince: this.$.input6.value,
+      });
+        this.$.input4.value = null;
+        this.$.input5.value = null;
+        this.$.input6.value = null;
+    },
+    add2: function() {
+      this.$.barangay.ref.push({
+          PsgCodeBarangay: this.$.input7.value,
+          BarangayName: this.$.input8.value,
+          PsgCodeMunicipalityCity: this.$.input9.value,
+          PsgCodeDistrict: this.$.input10.value,
+        });
+          this.$.input7.value = null;
+          this.$.input8.value = null;
+          this.$.input9.value = null;
+          this.$.input10.value = null;
+      },
+  _goPrev: function() {
+    this.$.pages.selectPrevious();
+  },
+  _goNext: function() {
+    this.$.pages.selectNext();
+  },
+
+});
+</script>
+</dom-module>

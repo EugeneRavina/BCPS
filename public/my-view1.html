@@ -1,0 +1,145 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-selector/iron-selector.html">
+
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+
+
+<dom-module id="my-view1">
+  <template>
+    <style is="custom-style">
+    :host {
+      --app-primary-color:  #009688;
+      --app-secondary-color:#444;
+      display: block;
+
+    }
+    .page-center{
+      @apply(--layout-center-justified);
+      color:#fff;
+      text-align: center;
+      padding-top:10px;
+      background-color: #9C27B0;
+    }
+    img{
+      height:300px;
+      width:300px;
+    }
+    .container{
+      @apply(--layout-center);
+      @apply(--layout-horizontal);
+      @apply(--layout-center-justified);
+    }
+    .controls{
+      @apply(--layout-horizontal);
+      @apply(--layout-end);
+      bottom:50px;
+    }
+    paper-button{
+      color:#fff;
+      width:50%;
+      margin:0;
+
+    }
+    .left{
+      border-top:1px solid #fff;
+      border-right:1px solid #fff;
+      border-bottom:1px solid #fff;
+    }
+    .right{
+      border-top:1px solid #fff;
+      border-left:1px solid #fff;
+      border-bottom:1px solid #fff;
+    }
+
+    </style>
+    <iron-pages selected="0" id="pages">
+        <section class="page-center">
+          <h2>Barangay Clearance Processing System</h2>
+          <h3>STEP 1</h3>
+          <paper-icon-button icon="settings" on-tap="showSettings"></paper-icon-button>
+         <div class="container">
+           <img src="img/Flat2.jpg"  alt="asd" >
+         </div>
+           <h3>1.	Proceed to the Office of the Tax Revenue Collector</h3>
+           <a name="login" href="login">Login</a>
+        </section>
+
+        <section class="page-center">
+          <h2>Barangay Clearance Processing System</h2>
+          <h3>STEP 2</h3>
+         <div class="container">
+           <img src="img/b3.png" alt="b" >
+         </div>
+           <h3>2.	Submit the necessary documents needed.</h3>
+           <a name="login" href="login">Login</a>
+        </section>
+
+        <section class="page-center">
+          <h2>Barangay Clearance Processing System</h2>
+          <h3>STEP 3</h3>
+         <div class="container">
+           <img src="img/b4.png" alt="s" >
+         </div>
+           <h3>3.	The person in charge will review the given documents</h3>
+           <a name="login" href="dashboard">Dashboard</a>
+        </section>
+    </iron-pages>
+    <div class="controls container flex">
+       <paper-button class="left" on-tap="_goPrev"><iron-icon icon="chevron-left"></iron-icon>Prev</paper-button>
+       <paper-button class="right" on-tap="_goNext">Next<iron-icon icon="chevron-right"></iron-icon></paper-button>
+     </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-view1',
+      behaviors: [Polymer.NeonAnimatableBehavior],
+
+      properties:{
+        value: function() {
+          return {
+            'entry': {
+              name:'slide-from-left-animation',
+              node: this
+            },
+            'exit':{
+              name:'fade-out-animation',
+              node: this
+            }
+          }
+        }
+      },
+
+      showSettings: function(){
+        this.fire('show-settings');
+      }
+      /*_goPrev: function(){
+        this.$.pages.selectPrevious();
+      },
+      _goNext: function(){
+        this.$.pages.selectNext();
+      }*/
+    });
+  </script>
+</dom-module>

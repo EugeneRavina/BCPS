@@ -1,0 +1,45 @@
+
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+
+<link rel="import" href="bower_components/granite-qrcode-generator/granite-qrcode-generator.html">
+
+<dom-module id="my-view">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <firebase-auth id="auth" user="{{user}}"> </firebase-auth>
+    <firebase-query
+      id="form"
+      path="users/[[user.uid]]"
+      data="{{form}}">
+    </firebase-query>
+        <template is="dom-repeat" items="[[form]]" as="form">
+          <granite-qrcode-generator
+              id="test"
+              data="{{form.FirstName}}"
+              mode="alphanumeric"
+              auto>
+          </granite-qrcode-generator>
+        </template>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'my-view',
+      properties: {
+        form: {
+          type: Object
+        },
+      }
+    });
+  </script>
+</dom-module>

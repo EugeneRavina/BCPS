@@ -1,0 +1,152 @@
+<!--
+@license
+Copyright 2016 Google Inc. All Rights Reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file or at
+https://github.com/firebase/polymerfire/blob/master/LICENSE
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="firebase-common-behavior.html">
+<link rel="import" href="firebase-storage-script.html">
+<script>
+  (function() {
+    'use strict';
+
+    /** @polymerBehavior Polymer.FirebaseStorageBehavior */
+    Polymer.FirebaseStorageBehaviorImpl = {
+      properties: {
+        storage : {
+          type: Object,
+          computed: '__computeStorage(app)'
+        },
+        ref: {
+          type: Object,
+          computed: '__computeRef(storage, path)'
+        },
+
+        /**
+         * Path to a Firebase root or endpoint. N.B. `path` is case sensitive.
+         */
+        path: {
+          type: String,
+          observer: '__pathChanged',
+          value: null
+        },
+
+        files: {
+          type: Array
+        },
+
+        uploadedFiles: {
+          type: Array,
+          notify: true,
+          value: []
+        },
+
+        autoUpload: {
+          type: Boolean,
+          value: false
+        },
+
+        tasks: {
+          type: Array,
+          notify: true,
+          value: []
+        }
+      },
+
+      get zeroValue() {
+        return [];
+      },
+
+      observers: [
+        '__filesChanged(files, autoUpload)'
+      ],
+
+      _updateUploadedFiles: function(j, snapshot) {
+        if (this.uploadedFiles[j].ref.fullPath === snapshot.ref.fullPath) {
+          if (snapshot.bytesTransferred === snapshot.totalBytes && !snapshot.downloadURL) {
+            this.storage.ref(snapshot.ref.fullPath).getDownloadURL().then(function(url){
+              var obj = {
+                downloadURL: url,
+                bytesTransferred: snapshot.bytesTransferred,
+                metadata: snapshot.metadata,
+                ref: snapshot.ref,
+                state: snapshot.state,
+                task: snapshot.task,
+                totalBytes: snapshot.totalBytes
+              };
+              this.splice('uploadedFiles', j, 1, obj);
+            }.bind(this)).catch(function(error) {
+              this.fire('error', error, { bubble: false});
+            }.bind(this));
+          } else {
+            this.splice('uploadedFiles', j, 1, snapshot);
+          }
+        }
+      },
+
+      _putMultipleFirebaseFiles: function(path, files) {
+        this._log('Putting Multiple Firebase files at',  path ? this.path + '/' + path : this.path);
+        files = files && typeof files === 'object' && files.name ? [files] : files;
+        if (files && files.length > 0) {
+          for (var i = 0; i < files.length; i++) {
+            var uploadTask = this._putFirebaseFile(path, files[i], files[i].metadata);
+            uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, function(snapshot) {
+              for (var j = 0; j < this.uploadedFiles.length; j++) {
+                this._updateUploadedFiles(j, snapshot);
+              }
+            }.bind(this), function(error) {
+              this.fire('error', error, { bubble: false});
+            }.bind(this));
+            this.push('uploadedFiles', uploadTask.snapshot);
+            this.push('tasks', uploadTask);
+          }
+        }
+      },
+
+      _putFirebaseFile: function(path, file, metadata) {
+        this._log('Putting Firebase file at', path ? this.path + '/' + path : this.path);
+        if (file) {
+          var newFilename = Date.now().toString() + '-' + file.name;
+          var newPath = path ? path + '/' +  newFilename: newFilename;
+          return this.ref.child(newPath).put(file, metadata);
+        }
+        return path ? this.ref.child(path).delete() : this.ref.delete();
+      },
+
+      __computeStorage: function(app) {
+        return app ? app.storage() : null;
+      },
+
+      __computeRef: function(storage, path) {
+        if (storage == null ||
+            path == null ||
+            path.split('/').slice(1).indexOf('') >= 0) {
+          return null;
+        }
+        return storage.ref(path);
+      },
+
+      __pathChanged: function(path, oldPath) {
+        if (oldPath != null) {
+          this.files = this.zeroValue;
+          this.uploadedFiles = this.zeroValue;
+        }
+      },
+
+      __filesChanged: function(files, autoUpload) {
+        if (autoUpload) {
+          this._putMultipleFirebaseFiles(null, files);
+        }
+      }
+    };
+
+    /** @polymerBehavior */
+    Polymer.FirebaseStorageBehavior = [
+      Polymer.FirebaseCommonBehavior,
+      Polymer.FirebaseStorageBehaviorImpl
+    ];
+  })();
+</script>

@@ -1,0 +1,124 @@
+
+<link rel="import" href="bower_components/note-app-elements/na-elements.html">
+<link rel="import" href="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+
+<link rel="import" href="bower_components/app-route/app-location.html">
+<link rel="import" href="bower_components/app-route/app-route.html">
+<link rel="import" href="bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-from-bottom-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-left-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/slide-from-left-animation.html">
+<link rel="import" href="bower_components/neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="my-step1.html">
+<link rel="import" href="my-view1.html">
+<link rel="import" href="my-view.html">
+<link rel="import" href="my-stepsApplication.html">
+<link rel="import" href="my-signup.html">
+<link rel="import" href="my-dashboard.html">
+<link rel="import" href="my-account.html">
+<link rel="import" href="my-upload.html">
+<link rel="manifest" href="manifest.json"/>
+
+
+<dom-module id="my-app">
+  <template>
+  <style is="custom-style">
+  :host {
+    --app-primary-color:  #0097A7;
+    --app-secondary-color:#444;
+    background-color: #ddd;
+    }
+  .center{
+    @apply(--layout-center-justified);
+  }
+  .page-center{
+    @apply(--layout-center-justified);
+    text-align: center;
+    height: 80vh;
+    margin-top: 50px;
+  }
+  </style>
+
+  <firebase-auth
+    id="auth"
+    provider="google"
+    signed-in="{{signedIn}}"
+    status-known="{{statusKnown}}"
+    user="{{user}}">
+  </firebase-auth>
+
+  <app-location route="{{route}}"></app-location>
+  <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subroute}}"></app-route>
+
+      <neon-animated-pages
+          selected="[[page]]"
+          attr-for-selected="name"
+          fallback-selection="view404"
+          entry-animation="slide-from-bottom-animation" exit-animation="fade-out-animation">
+
+        <my-login name="login"></my-login>
+        <my-dashboard name="dashboard"></my-dashboard>
+        <my-view1 name="view1"></my-view1>
+        <my-step1 name="step1"></my-step1>
+        <my-stepsApplication name="stepsApplication"></my-stepsApplication>
+        <my-view3 name="view3"></my-view3>
+        <my-account name="account"></my-account>
+        <my-signup name="signup"></my-signup>
+        <my-view name="view"></my-view>
+        <my-view404 name="view404"></my-view404>
+      </neon-animated-pages>
+    </app-header-layout>
+  </app-drawer-layout>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'my-app',
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
+      behaviors: [Polymer.NoteAppBehavior],
+
+      _routePageChanged: function(page) {
+        this.page = page || 'login';
+      },
+
+      _pageChanged: function(page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+
+      _showPage404: function() {
+        this.page = 'view404';
+      },
+
+    });
+  </script>
+</dom-module>

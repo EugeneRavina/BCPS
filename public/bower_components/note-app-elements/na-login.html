@@ -1,0 +1,170 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-input/paper-input-container.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-image/iron-image.html">
+<link rel="import" href="../paper-material/paper-material.html">
+<link rel="import" href="../polymerfire/firebase-auth.html">
+<link rel="import" href="../google-signin/google-signin.html">
+
+<dom-module id="na-login">
+  <template>
+    <style>
+      :host {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('images/bg1.jpg')no-repeat center center fixed;
+        background-repeat: no-repeat;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+        color: #fff;
+        display:;
+      }
+
+      :host([signed-in]) {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      paper-button > * {
+        vertical-align: middle;
+        text-transform: none;
+      }
+
+      .main-container{
+        height:100%;
+        background-color: rgba(0,151,167,0.8);
+        padding-left: 10%;
+        padding-right: 10%;
+      }
+      .container{
+        padding-left: 5%;
+        padding-right: 5%;
+      }
+      a{
+        color: #fff;
+        font-size: 15px;
+        @apply(--layout);
+        @apply(--layout-center-center);
+        padding:10px 10px;
+        text-decoration: none;
+      }
+      #example-sizing-cover {
+        height:30%;
+        @apply(--layout-center-justified);
+      }
+      .button{
+        @apply(--layout);
+        @apply(--layout-center-center);
+        background-color:#F44336;
+        margin-bottom: 15px;
+        margin-top: 15px;
+      }
+      .fb-button{
+        background-color: #4267B2;
+        text-transform: capitalize;
+        @apply(--layout);
+        @apply(--layout-center-center);
+      }
+      google-signin{
+        @apply(--layout);
+        @apply(--layout-center-center);
+        width:100%;
+      }
+      paper-input{
+        --paper-input-container-focus-color:#fff;
+        --paper-input-container-color:#CFD8DC;
+        --paper-input-container-input-color:#fff;
+        padding-bottom: 10px;
+        font-size: 20px;
+      }
+      iron-image{
+        width:100%;
+        height:200px;
+      }
+    </style>
+
+    <firebase-auth
+      id="auth"
+      provider="google"
+      status-known="{{statusKnown}}"
+      user="{{user}}">
+    </firebase-auth>
+
+    <div class="main-container">
+    <iron-image src="images/b3.png" preload sizing="contain"></iron-image>
+    <div class="container">
+      <paper-input label="Username:" value="{{email::input}}"></paper-input>
+      <paper-input label="Password:" type="password" value="{{password::input}}"></paper-input>
+      <paper-button class="button" raised on-tap="login" hidden$="[[user]]" >Log In</paper-button>
+      <a href="#" class="center">New to BCPS? Sign up now!</a>
+      <google-signin brand="google" width="wide" on-tap="signIn" disabled="[[disabled]]"></google-signin>
+      <paper-button raised class="fb-button">Log In with Facebook</paper-button>
+
+      <a href="#" class="center">Forgot Password? Click Here!</a>
+    </div>
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'na-login',
+
+      properties: {
+        disabled: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+        signedIn: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+        statusKnown: {
+          type: Boolean
+        },
+        email: {
+          type: String,
+          value: ''
+        },
+        password: {
+          type: String,
+          value: ''
+        },
+        user: {
+          type: Object,
+          value: null
+        },
+      },
+      login: function() {
+        this.$.auth.signInWithEmailAndPassword(this.email, this.password);
+        //this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
+      },
+      signIn: function() {
+        this.fire('sign-in', null, { bubbles: false });
+      },
+      facebook: function() {
+        this.$.auth.signInWithRedirect();
+      },
+    });
+  </script>
+</dom-module>
